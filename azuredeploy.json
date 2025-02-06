@@ -2,21 +2,34 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "resourceGroupName": {
-      "type": "string",
-      "defaultValue": "SentinelDeploymentRG",
-      "metadata": {
-        "description": "Name of the Resource Group"
-      }
-    },
     "location": {
       "type": "string",
-      "defaultValue": "westeurope",
+      "defaultValue": "Norway east",
       "metadata": {
         "description": "Azure region where resources will be deployed"
       }
+    },
+    "logAnalyticsWorkspaceName": {
+      "type": "string",
+      "defaultValue": "SentinelWorkspace",
+      "metadata": {
+        "description": "Name of the Log Analytics Workspace"
+      }
     }
   },
-  "resources": [],
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2021-06-01",
+      "name": "[parameters('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 90
+      }
+    }
+  ],
   "outputs": {}
 }
