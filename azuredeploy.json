@@ -37,10 +37,14 @@
   "location": "[parameters('location')]",
   "properties": {
     "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
-    "containedResources": [],
     "outputType": "Azure Sentinel",
     "publisher": "Microsoft",
-    "provisioningState": "Succeeded"
+    "plan": {
+      "name": "SecurityInsights",
+      "product": "OMSGallery/SecurityInsights",
+      "publisher": "Microsoft",
+      "promotionCode": ""
+    }
   },
   "dependsOn": [
     "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
