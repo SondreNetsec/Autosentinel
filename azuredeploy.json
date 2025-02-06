@@ -37,42 +37,16 @@
       "location": "[parameters('location')]",
       "properties": {
         "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
-        "publisher": "Microsoft",
-        "product": "OMSGallery/SecurityInsights"
+        "plan": {
+          "name": "SecurityInsights",
+          "product": "OMSGallery/SecurityInsights",
+          "publisher": "Microsoft",
+          "promotionCode": ""
+        }
       },
       "dependsOn": [
         "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
       ]
-    },
-{
-  "type": "Microsoft.Insights/diagnosticSettings",
-  "apiVersion": "2021-05-01-preview",
-  "name": "EntraID-Diagnostics",
-  "properties": {
-    "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
-    "logs": [
-      {
-        "category": "SigninLogs",
-        "enabled": true,
-        "retentionPolicy": {
-          "enabled": false,
-          "days": 0
-        }
-      },
-      {
-        "category": "AuditLogs",
-        "enabled": true,
-        "retentionPolicy": {
-          "enabled": false,
-          "days": 0
-        }
-      }
-    ]
-  },
-  "scope": "/providers/Microsoft.Entra",
-  "dependsOn": [
-    "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
-  ]
     },
 {
   "type": "Microsoft.SecurityInsights/dataConnectors",
