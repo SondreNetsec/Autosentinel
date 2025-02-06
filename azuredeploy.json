@@ -29,7 +29,73 @@
         },
         "retentionInDays": 90
       }
-    }
+    },
+    {
+      "type": "Microsoft.OperationsManagement/solutions",
+      "apiVersion": "2015-11-01-preview",
+      "name": "[concat('SecurityInsights(', parameters('logAnalyticsWorkspaceName'), ')')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
+        "publisher": "Microsoft",
+        "product": "OMSGallery/SecurityInsights"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
+      ]
+    },
+{
+  "type": "Microsoft.Insights/diagnosticSettings",
+  "apiVersion": "2021-05-01-preview",
+  "name": "EntraID-Diagnostics",
+  "properties": {
+    "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
+    "logs": [
+      {
+        "category": "SigninLogs",
+        "enabled": true,
+        "retentionPolicy": {
+          "enabled": false,
+          "days": 0
+        }
+      },
+      {
+        "category": "AuditLogs",
+        "enabled": true,
+        "retentionPolicy": {
+          "enabled": false,
+          "days": 0
+        }
+      }
+    ]
+  },
+  "scope": "/providers/Microsoft.Entra",
+  "dependsOn": [
+    "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
+  ]
+    },
+{
+  "type": "Microsoft.SecurityInsights/dataConnectors",
+  "apiVersion": "2022-11-01-preview",
+  "name": "[guid(resourceGroup().id, 'EntraIDConnector')]",  
+  "properties": {
+    "dataTypes": {
+      "SignInLogs": {
+        "state": "enabled"
+      },
+      "AuditLogs": {
+        "state": "enabled"
+      }
+    },
+    "kind": "AzureActiveDirectory",
+    "tenantId": "[subscription().tenantId]",
+    "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
+  },
+  "dependsOn": [
+    "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
+    "[resourceId('Microsoft.OperationsManagement/solutions', concat('SecurityInsights(', parameters('logAnalyticsWorkspaceName'), ')'))]"
+  ]
+}
   ],
   "outputs": {}
 }
